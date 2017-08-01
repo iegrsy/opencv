@@ -114,10 +114,6 @@ void MainWindow::on_pushButton_2_clicked()
 
 void MainWindow::on_pushButton_3_clicked()
 {
-    edgeVideo();
-}
-
-void MainWindow::edgeVideo(){
     VideoCapture capture(0);
     Mat frame;
 
@@ -133,12 +129,82 @@ void MainWindow::edgeVideo(){
             {
                 edge_src = frame;
                 cvtColor( edge_src, edge_gray, CV_BGR2GRAY );
-//                Canny( edge_gray, edge_gray, 90, 400, 3);
+                //                Canny( edge_gray, edge_gray, 90, 400, 3);
                 /// Create a window and a trackbar
                 namedWindow( edge_source_window, CV_WINDOW_AUTOSIZE );
                 imshow( edge_source_window, edge_gray );
 
                 cornerDetect( 0, 0 );
+            }
+            else
+            {
+                printf(" --(!) No captured frame -- Break!");
+                break;
+            }
+
+            int c = waitKey(10);
+            if( (char)c == 'c' )
+            {
+                break;
+            }
+        }
+        destroyAllWindows();
+    }
+    return ;
+}
+
+void MainWindow::on_pushButton_4_clicked()
+{
+
+    VideoCapture capture(0);
+    Mat frame;
+
+
+    if( capture.isOpened() )
+    {
+        while( true )
+        {
+            capture.read(frame);
+
+            //-- 3. Apply the classifier to the frame
+            if( !frame.empty() )
+            {
+                a.colorDetect(frame);
+            }
+            else
+            {
+                printf(" --(!) No captured frame -- Break!");
+                break;
+            }
+
+            int c = waitKey(10);
+            if( (char)c == 'c' )
+            {
+                break;
+            }
+        }
+        destroyAllWindows();
+    }
+    return ;
+}
+
+void MainWindow::on_pushButton_5_clicked()
+{
+
+    VideoCapture capture(0);
+    Mat frame;
+
+
+    if( capture.isOpened() )
+    {
+        while( true )
+        {
+            capture.read(frame);
+
+            //-- 3. Apply the classifier to the frame
+            if( !frame.empty() )
+            {
+                a.shapeDetect(frame);
             }
             else
             {
@@ -195,8 +261,6 @@ void MainWindow::on_horizontalSlider_valueChanged(int value)
     edge_thresh=value;
 }
 
-
-
 void MainWindow::on_edgeMinSlider_valueChanged(int value)
 {
     a.edgeMinSlider = value;
@@ -208,3 +272,5 @@ void MainWindow::on_edgeMaxSlider_valueChanged(int value)
     a.edgeMaxSlider = value;
     ui->lbledgeMax->setText(QString("Max: %1").arg(ui->edgeMaxSlider->value()));
 }
+
+
