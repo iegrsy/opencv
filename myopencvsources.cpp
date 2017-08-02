@@ -195,24 +195,24 @@ void myopencvsources::shapeDetect(Mat frame){
 
 double myopencvsources::angle(Point pt1, Point pt2, Point pt0)
 {
-        double dx1 = pt1.x - pt0.x;
-        double dy1 = pt1.y - pt0.y;
-        double dx2 = pt2.x - pt0.x;
-        double dy2 = pt2.y - pt0.y;
-        return (dx1*dx2 + dy1*dy2)/sqrt((dx1*dx1 + dy1*dy1)*(dx2*dx2 + dy2*dy2) + 1e-10);
+    double dx1 = pt1.x - pt0.x;
+    double dy1 = pt1.y - pt0.y;
+    double dx2 = pt2.x - pt0.x;
+    double dy2 = pt2.y - pt0.y;
+    return (dx1*dx2 + dy1*dy2)/sqrt((dx1*dx1 + dy1*dy1)*(dx2*dx2 + dy2*dy2) + 1e-10);
 }
 
 void myopencvsources::setLabel(Mat& im, const string label, vector<Point>& contour)
 {
-        int fontface = FONT_HERSHEY_SIMPLEX;
-        double scale = 0.4;
-        int thickness = 1;
-        int baseline = 0;
+    int fontface = FONT_HERSHEY_SIMPLEX;
+    double scale = 0.4;
+    int thickness = 1;
+    int baseline = 0;
 
-        Size text = getTextSize(label, fontface, scale, thickness, &baseline);
-        Rect r = boundingRect(contour);
+    Size text = getTextSize(label, fontface, scale, thickness, &baseline);
+    Rect r = boundingRect(contour);
 
-        Point pt(r.x + ((r.width - text.width) / 2), r.y + ((r.height + text.height) / 2));
-        rectangle(im, pt + Point(0, baseline), pt + Point(text.width, -text.height), CV_RGB(255,255,255), CV_FILLED);
-        putText(im, label, pt, fontface, scale, CV_RGB(0,0,0), thickness, 8);
+    Point pt(r.x + ((r.width - text.width) / 2), r.y + ((r.height + text.height) / 2));
+    rectangle(im, pt + Point(0, baseline), pt + Point(text.width, -text.height), CV_RGB(255,255,255), CV_FILLED);
+    putText(im, label, pt, fontface, scale, CV_RGB(0,0,0), thickness, 8);
 }

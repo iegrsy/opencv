@@ -11,6 +11,7 @@
 #include <opencv2/objdetect.hpp>
 #include <opencv2/imgproc.hpp>
 #include <iostream>
+#include <string>
 
 using namespace std;
 using namespace cv;
@@ -231,7 +232,7 @@ void MainWindow::cornerDetect( int, void* )
     /// Detector parameters
     int blockSize = 2;
     int apertureSize = 3;
-    double k = 0.04;
+    double k = 0.02;
 
     /// Detecting corners
     cornerHarris( corner_gray, dst, blockSize, apertureSize, k, BORDER_DEFAULT );
@@ -240,16 +241,26 @@ void MainWindow::cornerDetect( int, void* )
     normalize( dst, dst_norm, 0, 255, NORM_MINMAX, CV_32FC1, Mat() );
     convertScaleAbs( dst_norm, dst_norm_scaled );
 
+    Point prePoint;
+    int pointCount=0;
     /// Drawing a circle around corners
     for( int j = 0; j < dst_norm.rows ; j++ )
     { for( int i = 0; i < dst_norm.cols; i++ )
         {
             if( (int) dst_norm.at<float>(j,i) > corner_thresh )
             {
-                circle( dst_norm_scaled, Point( i, j ), 5,  Scalar(0), 2, 8, 0 );
+                if( cv::norm( cv::Mat(Point(j,i)) , cv::Mat(prePoint) ) > 1 ){
+
+                    circle( dst_norm_scaled, Point( i, j ), 5,  Scalar(255,0,0), 2, 8, 0 );
+
+                }
+                pointCount++;
+                prePoint = Point(j,i);
             }
         }
     }
+    QString s = QString::number(pointCount);
+    putText(dst_norm_scaled, s.toStdString(), Point(20,30), cv::FONT_HERSHEY_SIMPLEX, 1, Scalar(255,250,0), 2, cv::LINE_AA );
     /// Showing the result
     namedWindow( corner_corners_window, CV_WINDOW_AUTOSIZE );
     imshow( corner_corners_window, dst_norm_scaled );
@@ -258,6 +269,7 @@ void MainWindow::cornerDetect( int, void* )
 void MainWindow::on_horizontalSlider_valueChanged(int value)
 {
     corner_thresh=value;
+    ui->label_thresh->setText(QString("Thresh: %1").arg(ui->horizontalSlider->value()));
 }
 
 void MainWindow::on_edgeMinSlider_valueChanged(int value)
