@@ -45,6 +45,7 @@ public:
     Mat bw;
     Mat dst;
     vector<vector<Point> > contours;
+    vector<Vec4i> hierarchy;
     vector<Point> approx;
 
     void shapeDetect(Mat frame);

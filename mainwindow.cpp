@@ -249,11 +249,11 @@ void MainWindow::cornerDetect( int, void* )
         {
             if( (int) dst_norm.at<float>(j,i) > corner_thresh )
             {
-                if( cv::norm( cv::Mat(Point(j,i)) , cv::Mat(prePoint) ) > 1 ){
+//                if( cv::norm( cv::Mat(Point(j,i)) , cv::Mat(prePoint) ) > 1 ){
 
-                    circle( dst_norm_scaled, Point( i, j ), 5,  Scalar(255,0,0), 2, 8, 0 );
+                    circle( dst_norm_scaled, Point( i, j ), 5,  CV_RGB(255,45,50), 2, 8, 0 );
 
-                }
+//                }
                 pointCount++;
                 prePoint = Point(j,i);
             }

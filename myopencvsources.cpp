@@ -129,11 +129,11 @@ void myopencvsources::shapeDetect(Mat frame){
     // Use Canny instead of threshold to catch squares with gradient shading
     blur( gray, bw, Size(3,3) );
     Canny(gray, bw, 80, 240, 3);
-    imshow("bw", bw);
+    //    imshow("bw", bw);
     //bitwise_not(bw, bw);
 
     // Find contours
-    findContours(bw.clone(), contours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE);
+    findContours(bw.clone(), contours, hierarchy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE);
 
     frame.copyTo(dst);
 
@@ -144,12 +144,13 @@ void myopencvsources::shapeDetect(Mat frame){
         approxPolyDP(Mat(contours[i]), approx, arcLength(Mat(contours[i]), true)*0.02, true);
 
         // Skip small or non-convex objects
-        if (fabs(contourArea(contours[i])) < 100 || !isContourConvex(approx))
+        if (fabs(contourArea(contours[i])) < 200 || !isContourConvex(approx))
             continue;
 
         if (approx.size() == 3)
         {
             setLabel(dst, "TRI", contours[i]);    // Triangles
+            drawContours(dst, contours, i, Scalar(0, 255, 255), 5);
         }
         else if (approx.size() >= 4 && approx.size() <= 6)
         {
@@ -170,12 +171,18 @@ void myopencvsources::shapeDetect(Mat frame){
 
             // Use the degrees obtained above and the number of vertices
             // to determine the shape of the contour
-            if (vtc == 4 )
+            if (vtc == 4 ){
                 setLabel(dst, "RECT", contours[i]);
-            else if (vtc == 5 )
+                drawContours(dst, contours, i, Scalar(0, 0, 255), 5);
+            }
+            else if (vtc == 5 ){
                 setLabel(dst, "PENTA", contours[i]);
-            else if (vtc == 6 )
+                drawContours(dst, contours, i, Scalar(0, 255, 0), 5);
+            }
+            else if (vtc == 6 ){
                 setLabel(dst, "HEXA", contours[i]);
+                drawContours(dst, contours, i, Scalar(255, 0, 255), 5);
+            }
         }
         else
         {
@@ -185,8 +192,10 @@ void myopencvsources::shapeDetect(Mat frame){
             int radius = r.width / 2;
 
             if (abs(1 - ((double)r.width / r.height)) <= 0.2 &&
-                    abs(1 - (area / (CV_PI * (radius*radius)))) <= 0.2)
+                    abs(1 - (area / (CV_PI * (radius*radius)))) <= 0.2){
                 setLabel(dst, "CIR", contours[i]);
+                drawContours(dst, contours, i, Scalar(255, 0, 0), 5);
+            }
         }
     }
 
