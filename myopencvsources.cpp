@@ -14,7 +14,6 @@
 using namespace std;
 using namespace cv;
 
-
 myopencvsources::myopencvsources()
 {
 

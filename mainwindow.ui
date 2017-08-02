@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>541</width>
-    <height>511</height>
+    <width>546</width>
+    <height>491</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -130,16 +130,16 @@
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>
-        <widget class="QPushButton" name="pushButton_4">
+        <widget class="QPushButton" name="pushButton_5">
          <property name="text">
-          <string>Color</string>
+          <string>Video Shape Detection</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="pushButton_5">
+        <widget class="QPushButton" name="pushButton_4">
          <property name="text">
-          <string>şekil</string>
+          <string>Color</string>
          </property>
         </widget>
        </item>
@@ -153,7 +153,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>541</width>
+     <width>546</width>
      <height>25</height>
     </rect>
    </property>

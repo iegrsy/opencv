@@ -30,7 +30,6 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-
 void MainWindow::on_pushButton_clicked()
 {
 
@@ -127,12 +126,12 @@ void MainWindow::on_pushButton_3_clicked()
             //-- 3. Apply the classifier to the frame
             if( !frame.empty() )
             {
-                edge_src = frame;
-                cvtColor( edge_src, edge_gray, CV_BGR2GRAY );
-                //                Canny( edge_gray, edge_gray, 90, 400, 3);
+                corner_src = frame;
+                cvtColor( corner_src, corner_gray, CV_BGR2GRAY );
+                //                Canny( corner_gray, corner_gray, 90, 400, 3);
                 /// Create a window and a trackbar
-                namedWindow( edge_source_window, CV_WINDOW_AUTOSIZE );
-                imshow( edge_source_window, edge_gray );
+                namedWindow( corner_source_window, CV_WINDOW_AUTOSIZE );
+                imshow( corner_source_window, corner_gray );
 
                 cornerDetect( 0, 0 );
             }
@@ -227,7 +226,7 @@ void MainWindow::cornerDetect( int, void* )
 {
 
     Mat dst, dst_norm, dst_norm_scaled;
-    dst = Mat::zeros( edge_src.size(), CV_32FC1 );
+    dst = Mat::zeros( corner_src.size(), CV_32FC1 );
 
     /// Detector parameters
     int blockSize = 2;
@@ -235,7 +234,7 @@ void MainWindow::cornerDetect( int, void* )
     double k = 0.04;
 
     /// Detecting corners
-    cornerHarris( edge_gray, dst, blockSize, apertureSize, k, BORDER_DEFAULT );
+    cornerHarris( corner_gray, dst, blockSize, apertureSize, k, BORDER_DEFAULT );
 
     /// Normalizing
     normalize( dst, dst_norm, 0, 255, NORM_MINMAX, CV_32FC1, Mat() );
@@ -245,20 +244,20 @@ void MainWindow::cornerDetect( int, void* )
     for( int j = 0; j < dst_norm.rows ; j++ )
     { for( int i = 0; i < dst_norm.cols; i++ )
         {
-            if( (int) dst_norm.at<float>(j,i) > edge_thresh )
+            if( (int) dst_norm.at<float>(j,i) > corner_thresh )
             {
                 circle( dst_norm_scaled, Point( i, j ), 5,  Scalar(0), 2, 8, 0 );
             }
         }
     }
     /// Showing the result
-    namedWindow( edge_corners_window, CV_WINDOW_AUTOSIZE );
-    imshow( edge_corners_window, dst_norm_scaled );
+    namedWindow( corner_corners_window, CV_WINDOW_AUTOSIZE );
+    imshow( corner_corners_window, dst_norm_scaled );
 }
 
 void MainWindow::on_horizontalSlider_valueChanged(int value)
 {
-    edge_thresh=value;
+    corner_thresh=value;
 }
 
 void MainWindow::on_edgeMinSlider_valueChanged(int value)

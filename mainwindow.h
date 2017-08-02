@@ -24,12 +24,12 @@ class MainWindow : public QMainWindow
 public:
 
     /// Global variables
-    Mat edge_src, edge_gray;
-    int edge_thresh = 200;
-    int edge_max_thresh = 255;
+    Mat corner_src, corner_gray;
+    int corner_thresh = 200;
+    int corner_max_thresh = 255;
 
-    char* edge_source_window = "Source image";
-    char* edge_corners_window = "Corners detected";
+    char* corner_source_window = "Source image";
+    char* corner_corners_window = "Corners detected";
 
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
