@@ -249,11 +249,9 @@ void MainWindow::cornerDetect( int, void* )
         {
             if( (int) dst_norm.at<float>(j,i) > corner_thresh )
             {
-//                if( cv::norm( cv::Mat(Point(j,i)) , cv::Mat(prePoint) ) > 1 ){
-
-                    circle( dst_norm_scaled, Point( i, j ), 5,  CV_RGB(255,45,50), 2, 8, 0 );
-
-//                }
+                if( cv::norm( cv::Mat(Point(j,i)) , cv::Mat(prePoint) ) > 1 ){
+                    circle( dst_norm_scaled, Point( i, j ), 5,  (255,255,255), 2, 8, 0 );
+                }
                 pointCount++;
                 prePoint = Point(j,i);
             }
@@ -284,4 +282,10 @@ void MainWindow::on_edgeMaxSlider_valueChanged(int value)
     ui->lbledgeMax->setText(QString("Max: %1").arg(ui->edgeMaxSlider->value()));
 }
 
+void MainWindow::on_sliderCircleR_valueChanged(int value)
+{
+    a.colorRadius = value;
+    a.colorRadiusToPisc = (int) a.colorRadius*0.7;
 
+    ui->label_color->setText(QString("Radius: %1").arg(ui->sliderCircleR->value()));
+}

@@ -43,10 +43,10 @@ private slots:
     void on_horizontalSlider_valueChanged(int value);
     void on_edgeMinSlider_valueChanged(int value);
     void on_edgeMaxSlider_valueChanged(int value);
-
     void on_pushButton_4_clicked();
-
     void on_pushButton_5_clicked();
+
+    void on_sliderCircleR_valueChanged(int value);
 
 private:
     Ui::MainWindow *ui;

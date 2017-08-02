@@ -11,6 +11,8 @@
 #include <stdio.h>
 #include <vector>
 
+#include <QDebug>
+
 using namespace std;
 using namespace cv;
 
@@ -63,94 +65,62 @@ void myopencvsources::imgToEdge(Mat frame){
 }
 
 void myopencvsources::colorDetect(Mat frame){
-    Mat gray;
 
-    cvtColor(frame , gray , CV_BGR2GRAY);
+    Mat color= frame.clone();
 
-    //    circle(gray , Point( gray.cols/2 , gray.rows/2 ) , 80 , Scalar(255,255,255), 8 , 0);
-    rectangle(gray , Point(gray.cols/2 - 50,gray.rows/2 - 50) , Point(gray.cols/2 + 50,gray.rows/2 + 50),Scalar(0,0,0),8,0);
+    circle(color , Point(color.cols/2,color.rows/2) , colorRadius , Scalar(255,0,0) , 1 , 8 , 0);
 
-    Mat mask;
-    threshold(gray, mask, 0, 255, CV_THRESH_BINARY_INV | CV_THRESH_OTSU);
+    int colorAvgR = 0;
+    int colorAvgG = 0;
+    int colorAvgB = 0;
+    Vec3b temp;
+    int count=0;
+    for(int j = (color.rows/2-colorRadiusToPisc) ; j<(color.cols/2+colorRadiusToPisc) ; j++){
+        for(int i = (color.cols/2-colorRadiusToPisc) ; i < (color.cols/2+colorRadiusToPisc) ; i++){
+            temp = color.at<Vec3b>(j,i);
 
-    // find contours (if always so easy to segment as your image, you could just add the black/rect pixels to a vector)
-    vector< vector<Point> > contours;
-    vector<Vec4i> hierarchy;
-    findContours(mask,contours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE);
-
-    /// Draw contours and find biggest contour (if there are other contours in the image, we assume the biggest one is the desired rect)
-    // drawing here is only for demonstration!
-    int biggestContourIdx = -1;
-    float biggestContourArea = 0;
-    Mat drawing = Mat::zeros( mask.size(), CV_8UC3 );
-    for( int i = 0; i< contours.size(); i++ )
-    {
-        Scalar color = Scalar(0, 100, 0);
-        drawContours( drawing, contours, i, color, 1, 8, hierarchy, 0, Point() );
-
-        float ctArea= contourArea(contours[i]);
-        if(ctArea > biggestContourArea)
-        {
-            biggestContourArea = ctArea;
-            biggestContourIdx = i;
+            colorAvgB += (int) temp.val[0];
+            colorAvgG += (int) temp.val[1];
+            colorAvgR += (int) temp.val[2];
+            count++;
         }
     }
+    circle(color , Point(color.cols-50,color.rows-50) , 35 ,
+           Scalar(colorAvgB / (count) , colorAvgG / (count) , colorAvgR / (count) ),
+           CV_FILLED , 8 , 0);
 
-    // if no contour found
-    if(biggestContourIdx < 0)
-    {
-        cout << "no contour found" << endl;
-        return ;
-    }
-
-    // compute the rotated bounding rect of the biggest contour! (this is the part that does what you want/need)
-    RotatedRect boundingBox = minAreaRect(contours[biggestContourIdx]);
-    // one thing to remark: this will compute the OUTER boundary box, so maybe you have to erode/dilate if you want something between the ragged lines
-
-
-
-    // draw the rotated rect
-    Point2f corners[4];
-    boundingBox.points(corners);
-    line(drawing, corners[0], corners[1], Scalar(255,255,255));
-    line(drawing, corners[1], corners[2], Scalar(255,255,255));
-    line(drawing, corners[2], corners[3], Scalar(255,255,255));
-    line(drawing, corners[3], corners[0], Scalar(255,255,255));
-
-
-    imshow( window_name2, drawing );
+    imshow( window_name2, color );
 }
 
 void myopencvsources::shapeDetect(Mat frame){
-
     // Convert to grayscale
-    cvtColor(frame, gray, CV_BGR2GRAY);
+    cvtColor(frame, shape_gray, CV_BGR2GRAY);
 
     // Use Canny instead of threshold to catch squares with gradient shading
-    blur( gray, bw, Size(3,3) );
-    Canny(gray, bw, 80, 240, 3);
-    //    imshow("bw", bw);
-    //bitwise_not(bw, bw);
+    blur( shape_gray, shape_bw, Size(3,3) );
+    Canny(shape_gray, shape_bw, 80, 240, 3);
+    //    imshow("shape_bw", shape_bw);
+    //bitwise_not(shape_bw, shape_bw);
 
-    // Find contours
-    findContours(bw.clone(), contours, hierarchy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE);
+    // Find shape_contours
+    findContours(shape_bw.clone(), shape_contours, hierarchy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE);
 
-    frame.copyTo(dst);
+    frame.copyTo(shape_dst);
 
-    for (int i = 0; i < contours.size(); i++)
+    for (int i = 0; i < shape_contours.size(); i++)
     {
         // Approximate contour with accuracy proportional
         // to the contour perimeter
-        approxPolyDP(Mat(contours[i]), approx, arcLength(Mat(contours[i]), true)*0.02, true);
+        approxPolyDP(Mat(shape_contours[i]), approx, arcLength(Mat(shape_contours[i]), true)*0.02, true);
 
         // Skip small or non-convex objects
-        if (fabs(contourArea(contours[i])) < 200 || !isContourConvex(approx))
+        if (fabs(contourArea(shape_contours[i])) < 200 || !isContourConvex(approx))
             continue;
 
         if (approx.size() == 3)
         {
-            setLabel(dst, "TRI", contours[i]);    // Triangles
-            drawContours(dst, contours, i, Scalar(0, 255, 255), 5);
+            setLabel(shape_dst, "TRI", shape_contours[i]);    // Triangles
+            drawContours(shape_dst, shape_contours, i, Scalar(0, 255, 255), 5);
         }
         else if (approx.size() >= 4 && approx.size() <= 6)
         {
@@ -172,34 +142,34 @@ void myopencvsources::shapeDetect(Mat frame){
             // Use the degrees obtained above and the number of vertices
             // to determine the shape of the contour
             if (vtc == 4 ){
-                setLabel(dst, "RECT", contours[i]);
-                drawContours(dst, contours, i, Scalar(0, 0, 255), 5);
+                setLabel(shape_dst, "RECT", shape_contours[i]);
+                drawContours(shape_dst, shape_contours, i, Scalar(0, 0, 255), 5);
             }
             else if (vtc == 5 ){
-                setLabel(dst, "PENTA", contours[i]);
-                drawContours(dst, contours, i, Scalar(0, 255, 0), 5);
+                setLabel(shape_dst, "PENTA", shape_contours[i]);
+                drawContours(shape_dst, shape_contours, i, Scalar(0, 255, 0), 5);
             }
             else if (vtc == 6 ){
-                setLabel(dst, "HEXA", contours[i]);
-                drawContours(dst, contours, i, Scalar(255, 0, 255), 5);
+                setLabel(shape_dst, "HEXA", shape_contours[i]);
+                drawContours(shape_dst, shape_contours, i, Scalar(255, 0, 255), 5);
             }
         }
         else
         {
             // Detect and label circles
-            double area = contourArea(contours[i]);
-            Rect r = boundingRect(contours[i]);
+            double area = contourArea(shape_contours[i]);
+            Rect r = boundingRect(shape_contours[i]);
             int radius = r.width / 2;
 
             if (abs(1 - ((double)r.width / r.height)) <= 0.2 &&
                     abs(1 - (area / (CV_PI * (radius*radius)))) <= 0.2){
-                setLabel(dst, "CIR", contours[i]);
-                drawContours(dst, contours, i, Scalar(255, 0, 0), 5);
+                setLabel(shape_dst, "CIR", shape_contours[i]);
+                drawContours(shape_dst, shape_contours, i, Scalar(255, 0, 0), 5);
             }
         }
     }
 
-    imshow(window_name3 , dst);
+    imshow(window_name3 , shape_dst);
 }
 
 double myopencvsources::angle(Point pt1, Point pt2, Point pt0)
