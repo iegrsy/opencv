@@ -41,7 +41,15 @@ public:
 
 
 
+    Mat gray;
+    Mat bw;
+    Mat dst;
+    vector<vector<Point> > contours;
+    vector<Point> approx;
+
     void shapeDetect(Mat frame);
+    double angle(Point pt1, Point pt2, Point pt0);
+    void setLabel(Mat &im, const string label, vector<Point> &contour);
 };
 
 #endif // MYOPENCVSOURCES_H
