@@ -35,8 +35,6 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_pushButton_clicked()
 {
-
-
     VideoCapture capture(0);
     Mat frame;
 
@@ -270,6 +268,39 @@ void MainWindow::on_pushButton_6_clicked()
     return ;
 }
 
+void MainWindow::on_pushButton_7_clicked()
+{
+    VideoCapture capture(0);
+    Mat frame;
+
+    if( capture.isOpened() )
+    {
+        while( true )
+        {
+            capture.read(frame);
+
+            //-- 3. Apply the classifier to the frame
+            if( !frame.empty() )
+            {
+                a.colorDect( frame );
+            }
+            else
+            {
+                printf(" --(!) No captured frame -- Break!");
+                break;
+            }
+
+            int c = waitKey(10);
+            if( (char)c == 'c' )
+            {
+                break;
+            }
+        }
+        destroyAllWindows();
+    }
+    return ;
+}
+
 void MainWindow::cornerDetect( int, void* )
 {
 
@@ -341,5 +372,27 @@ void MainWindow::on_sliderCorner1_valueChanged(int value)
 {
     a.corner1_maxCorners=value;
     ui->lblCorner1->setText(QString("Sens: %1").arg(ui->sliderCorner1->value()));
+}
 
+void MainWindow::on_sliderColorB_valueChanged(int value)
+{
+    a.colorB = value;
+    ui->lblColorDectB->setText(QString("B: %1").arg(ui->sliderColorB->value()));
+}
+
+void MainWindow::on_sliderColorG_valueChanged(int value)
+{
+    a.colorG = value;
+    ui->lblColorDectG->setText(QString("G: %1").arg(ui->sliderColorG->value()));
+}
+
+void MainWindow::on_sliderColorR_valueChanged(int value)
+{
+    a.colorR = value;
+    ui->lblColorDectR->setText(QString("R: %1").arg(ui->sliderColorR->value()));
+}
+
+void MainWindow::on_sliderColorLamda_valueChanged(int value)
+{
+    a.colorLamda = value;
 }

@@ -23,6 +23,7 @@ public:
     string window_name2 = "Capture - Color";
     string window_name3 = "Capture - shape ";
     string window_name4 = "Capture - corner1";
+    string window_name5 = "Capture - color detect";
 
     String face_cascade_name = "/home/ieg/Belgeler/openCV/opencv/data/haarcascades_cuda/haarcascade_frontalface_alt.xml";
     String eyes_cascade_name = "/home/ieg/Belgeler/openCV/opencv/data/haarcascades_cuda/haarcascade_eye_tree_eyeglasses.xml";
@@ -61,6 +62,11 @@ public:
 
     void cornerDetect1(Mat frame);
     void goodFeaturesToTrack_Demo(int, void *);
+
+
+    int colorB,colorG,colorR;
+    int colorLamda;
+    void colorDect(Mat frame);
 };
 
 #endif // MYOPENCVSOURCES_H

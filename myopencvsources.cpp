@@ -7,6 +7,7 @@
 #include "opencv2/imgproc/imgproc.hpp"
 #include "opencv2/core.hpp"
 
+
 #include <iostream>
 #include <stdio.h>
 #include <vector>
@@ -88,7 +89,7 @@ void myopencvsources::colorDetect(Mat frame){
     circle(color , Point(color.cols-50,color.rows-50) , 35 ,
            Scalar(colorAvgB / (count) , colorAvgG / (count) , colorAvgR / (count) ),
            CV_FILLED , 8 , 0);
-
+    qDebug()<<QString("B: %1 G: %2 R: %3").arg(colorAvgB / (count)).arg(colorAvgG / (count)).arg(colorAvgR / (count) );
     imshow( window_name2, color );
 }
 
@@ -198,39 +199,62 @@ void myopencvsources::setLabel(Mat& im, const string label, vector<Point>& conto
 
 void myopencvsources::cornerDetect1(Mat frame){
 
-      corner1_src = frame;
-      cvtColor( corner1_src, corner1_src_gray, CV_BGR2GRAY );
+    corner1_src = frame;
+    cvtColor( corner1_src, corner1_src_gray, CV_BGR2GRAY );
 
-      goodFeaturesToTrack_Demo( 0, 0 );
+    goodFeaturesToTrack_Demo( 0, 0 );
 }
 
 void myopencvsources::goodFeaturesToTrack_Demo( int, void* )
 {
-  if( corner1_maxCorners < 1 ) { corner1_maxCorners = 1; }
+    if( corner1_maxCorners < 1 ) { corner1_maxCorners = 1; }
 
-  /// Parameters for Shi-Tomasi algorithm
-  vector<Point2f> corners;
-  double qualityLevel = 0.01;
-  double minDistance = 10;
-  int blockSize = 3;
-  bool useHarrisDetector = false;
-  double k = 0.04;
+    /// Parameters for Shi-Tomasi algorithm
+    vector<Point2f> corners;
+    double qualityLevel = 0.01;
+    double minDistance = 10;
+    int blockSize = 3;
+    bool useHarrisDetector = false;
+    double k = 0.04;
 
-  /// Copy the source image
-  Mat copy;
-  copy = corner1_src.clone();
+    /// Copy the source image
+    Mat copy;
+    copy = corner1_src.clone();
 
-  /// Apply corner detection
-  goodFeaturesToTrack( corner1_src_gray , corners , corner1_maxCorners , qualityLevel , minDistance ,
-                       Mat() , blockSize , useHarrisDetector , k );
+    /// Apply corner detection
+    goodFeaturesToTrack( corner1_src_gray , corners , corner1_maxCorners , qualityLevel , minDistance ,
+                         Mat() , blockSize , useHarrisDetector , k );
 
-  int r = 4;
-  for( int i = 0; i < corners.size(); i++ )
-     { circle( copy, corners[i], r, Scalar(255,0,0), -1, 8, 0 ); }
+    int r = 4;
+    for( int i = 0; i < corners.size(); i++ )
+    { circle( copy, corners[i], r, Scalar(255,0,0), -1, 8, 0 ); }
 
-  putText(copy , QString::number(corners.size()).toStdString(),
-          Point(20,30) , cv::FONT_HERSHEY_SIMPLEX , 1 ,
-          Scalar(255,250,0) , 2 , cv::LINE_AA );
+    putText(copy , QString::number(corners.size()).toStdString(),
+            Point(20,30) , cv::FONT_HERSHEY_SIMPLEX , 1 ,
+            Scalar(255,250,0) , 2 , cv::LINE_AA );
 
-  imshow( window_name4, copy );
+    imshow( window_name4, copy );
+}
+
+void myopencvsources::colorDect(Mat frame){
+
+    Mat dst;
+
+    inRange(frame , Scalar(colorB,colorG,colorR) , Scalar(colorB+colorLamda,colorG+colorLamda,colorR+colorLamda) , dst);
+
+    GaussianBlur(dst, dst, Size(9, 9), 2, 2);
+
+    vector<vector<Point> > contours;
+        vector<Vec4i> hierarchy;
+        /// Find contours
+        findContours(dst, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
+
+        for (int i = 0; i < contours.size(); i++)
+        {
+            drawContours(frame, contours, i, Scalar(0,0,255), 2, 8, hierarchy, 0, Point());
+        }
+
+
+    imshow(window_name5 , dst);
+    imshow("frame",frame);
 }

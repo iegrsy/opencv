@@ -52,6 +52,16 @@ private slots:
 
     void on_sliderCorner1_valueChanged(int value);
 
+    void on_pushButton_7_clicked();
+
+    void on_sliderColorB_valueChanged(int value);
+
+    void on_sliderColorG_valueChanged(int value);
+
+    void on_sliderColorR_valueChanged(int value);
+
+    void on_sliderColorLamda_valueChanged(int value);
+
 private:
     Ui::MainWindow *ui;
 };
