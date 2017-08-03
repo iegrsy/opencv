@@ -48,6 +48,10 @@ private slots:
 
     void on_sliderCircleR_valueChanged(int value);
 
+    void on_pushButton_6_clicked();
+
+    void on_sliderCorner1_valueChanged(int value);
+
 private:
     Ui::MainWindow *ui;
 };

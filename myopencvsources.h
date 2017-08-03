@@ -22,6 +22,7 @@ public:
     string window_name1 = "Capture - Edge Video";
     string window_name2 = "Capture - Color";
     string window_name3 = "Capture - shape ";
+    string window_name4 = "Capture - corner1";
 
     String face_cascade_name = "/home/ieg/Belgeler/openCV/opencv/data/haarcascades_cuda/haarcascade_frontalface_alt.xml";
     String eyes_cascade_name = "/home/ieg/Belgeler/openCV/opencv/data/haarcascades_cuda/haarcascade_eye_tree_eyeglasses.xml";
@@ -51,6 +52,15 @@ public:
     int colorRadiusToPisc = (int) colorRadius*0.7;
     void colorDetect(Mat frame);
 
+
+
+    /// Global variables
+    Mat corner1_src, corner1_src_gray;
+
+    int corner1_maxCorners = 23;
+
+    void cornerDetect1(Mat frame);
+    void goodFeaturesToTrack_Demo(int, void *);
 };
 
 #endif // MYOPENCVSOURCES_H

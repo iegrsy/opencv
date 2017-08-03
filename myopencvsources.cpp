@@ -195,3 +195,42 @@ void myopencvsources::setLabel(Mat& im, const string label, vector<Point>& conto
     rectangle(im, pt + Point(0, baseline), pt + Point(text.width, -text.height), CV_RGB(255,255,255), CV_FILLED);
     putText(im, label, pt, fontface, scale, CV_RGB(0,0,0), thickness, 8);
 }
+
+void myopencvsources::cornerDetect1(Mat frame){
+
+      corner1_src = frame;
+      cvtColor( corner1_src, corner1_src_gray, CV_BGR2GRAY );
+
+      goodFeaturesToTrack_Demo( 0, 0 );
+}
+
+void myopencvsources::goodFeaturesToTrack_Demo( int, void* )
+{
+  if( corner1_maxCorners < 1 ) { corner1_maxCorners = 1; }
+
+  /// Parameters for Shi-Tomasi algorithm
+  vector<Point2f> corners;
+  double qualityLevel = 0.01;
+  double minDistance = 10;
+  int blockSize = 3;
+  bool useHarrisDetector = false;
+  double k = 0.04;
+
+  /// Copy the source image
+  Mat copy;
+  copy = corner1_src.clone();
+
+  /// Apply corner detection
+  goodFeaturesToTrack( corner1_src_gray , corners , corner1_maxCorners , qualityLevel , minDistance ,
+                       Mat() , blockSize , useHarrisDetector , k );
+
+  int r = 4;
+  for( int i = 0; i < corners.size(); i++ )
+     { circle( copy, corners[i], r, Scalar(255,0,0), -1, 8, 0 ); }
+
+  putText(copy , QString::number(corners.size()).toStdString(),
+          Point(20,30) , cv::FONT_HERSHEY_SIMPLEX , 1 ,
+          Scalar(255,250,0) , 2 , cv::LINE_AA );
+
+  imshow( window_name4, copy );
+}

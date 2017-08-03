@@ -12,6 +12,8 @@
 #include <opencv2/imgproc.hpp>
 #include <iostream>
 #include <string>
+#include <stdlib.h>
+#include <stdio.h>
 
 using namespace std;
 using namespace cv;
@@ -223,6 +225,51 @@ void MainWindow::on_pushButton_5_clicked()
     return ;
 }
 
+void MainWindow::on_pushButton_6_clicked()
+{
+    VideoCapture capture(0);
+    Mat frame;
+
+    //-- 1. Load the cascades
+    if( !a.face_cascade.load( a.face_cascade_name ) )
+    {
+        printf("--(!)Error loading\n");
+        return;
+    };
+    if( !a.eyes_cascade.load( a.eyes_cascade_name ) )
+    {
+        printf("--(!)Error loading\n");
+        return ;
+    };
+
+    if( capture.isOpened() )
+    {
+        while( true )
+        {
+            capture.read(frame);
+
+            //-- 3. Apply the classifier to the frame
+            if( !frame.empty() )
+            {
+                a.cornerDetect1(frame);
+            }
+            else
+            {
+                printf(" --(!) No captured frame -- Break!");
+                break;
+            }
+
+            int c = waitKey(10);
+            if( (char)c == 'c' )
+            {
+                break;
+            }
+        }
+        destroyAllWindows();
+    }
+    return ;
+}
+
 void MainWindow::cornerDetect( int, void* )
 {
 
@@ -288,4 +335,11 @@ void MainWindow::on_sliderCircleR_valueChanged(int value)
     a.colorRadiusToPisc = (int) a.colorRadius*0.7;
 
     ui->label_color->setText(QString("Radius: %1").arg(ui->sliderCircleR->value()));
+}
+
+void MainWindow::on_sliderCorner1_valueChanged(int value)
+{
+    a.corner1_maxCorners=value;
+    ui->lblCorner1->setText(QString("Sens: %1").arg(ui->sliderCorner1->value()));
+
 }
