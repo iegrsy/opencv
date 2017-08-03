@@ -81,8 +81,8 @@ void MainWindow::on_pushButton_clicked()
 void MainWindow::on_pushButton_2_clicked()
 {
     VideoCapture capture(0);
+    //    Mat frame = imread("/home/ieg/Resimler/imas.jpg");
     Mat frame;
-
 
     if( capture.isOpened() )
     {
