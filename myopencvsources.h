@@ -25,8 +25,8 @@ public:
     string window_name4 = "Capture - corner1";
     string window_name5 = "Capture - color detect";
 
-    String face_cascade_name = "/home/ieg/Belgeler/openCV/opencv/data/haarcascades_cuda/haarcascade_frontalface_alt.xml";
-    String eyes_cascade_name = "/home/ieg/Belgeler/openCV/opencv/data/haarcascades_cuda/haarcascade_eye_tree_eyeglasses.xml";
+    String face_cascade_name = "C:\\openCV\\opencv\\sources\\data\\haarcascades_cuda\\haarcascade_frontalface_alt.xml";
+    String eyes_cascade_name = "C:\\openCV\\opencv\\sources\\data\\haarcascades_cuda\\haarcascade_eye_tree_eyeglasses.xml";
 
     CascadeClassifier face_cascade;
     CascadeClassifier eyes_cascade;

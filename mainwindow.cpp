@@ -231,12 +231,12 @@ void MainWindow::on_pushButton_6_clicked()
     //-- 1. Load the cascades
     if( !a.face_cascade.load( a.face_cascade_name ) )
     {
-        printf("--(!)Error loading\n");
+        qDebug()<<"--(!)Error loading\n";
         return;
     };
     if( !a.eyes_cascade.load( a.eyes_cascade_name ) )
     {
-        printf("--(!)Error loading\n");
+        qDebug()<<"--(!)Error loading\n";
         return ;
     };
 
