@@ -28,8 +28,8 @@ public:
     int corner_thresh = 200;
     int corner_max_thresh = 255;
 
-    char* corner_source_window = "Source image";
-    char* corner_corners_window = "Corners detected";
+    string corner_source_window = "Source image";
+    string corner_corners_window = "Corners detected";
 
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
