@@ -14,7 +14,6 @@ TEMPLATE = app
 INCLUDEPATH += /usr/local/include/opencv
 
 LIBS += -L/usr/local/lib \
--lopencv_dnn \
 -lopencv_ml \
 -lopencv_objdetect \
 -lopencv_shape\
